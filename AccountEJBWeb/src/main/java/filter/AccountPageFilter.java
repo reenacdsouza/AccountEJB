@@ -15,8 +15,10 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet Filter implementation class AccountPageFilter
  */
-@WebFilter("/Dashboard")
+@WebFilter("/*")
 public class AccountPageFilter implements Filter {
+	private HttpServletRequest request;
+	private HttpServletResponse response;
 
 	/**
 	 * Default constructor.
@@ -30,29 +32,69 @@ public class AccountPageFilter implements Filter {
 	public void destroy() {
 	}
 
+//	private static final String[] loginRequiredUrls = { "/Dashboard", "/Payees", "/Profile", "/Transactions","/Error","/dashboard.jsp", "/error.jsp", "/payees.jsp", "/profile.jsp", "/transactions.jsp" };
+	private static final String[] loginRequiredUrls = { "/Dashboard", "/Payees", "/Profile", "/Transactions",
+			"/Error" };
+	private static final String[] loginPageUrls = { "/Login", "/login.jsp" };
+
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("In do filter method");
-		HttpServletResponse response = (HttpServletResponse) res;
-		HttpServletRequest request = (HttpServletRequest) req;
-
+		response = (HttpServletResponse) res;
+		request = (HttpServletRequest) req;
+		System.out.println("In do filter method" + request.getRequestURL().toString());
 		HttpSession session = request.getSession(false);
+		String encode = response.encodeURL(request.getContextPath());
 
-		if (session == null || session.getAttribute("username") == null) {
+		boolean loggedIn = (session != null && session.getAttribute("username") != null);
+		boolean loginRequest = request.getRequestURI().equals(encode + "/Login");
+		boolean loginOutRequest = request.getRequestURI().equals(encode + "/Logout");
+		boolean loginPage = request.getRequestURI().endsWith("/");
+
+		if (!loggedIn && (loginPage || loginRequest)) {
+			System.out.println("Not logged in and on welcome page or Login servlet");
+			chain.doFilter(request, response);
+		} else if (!loggedIn && isLoginRequiredUrl()) {
 			System.out.println("In do filter if where session is null or username is null");
-			response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-			response.setHeader("Pragma", "no-cache");
-			response.setDateHeader("Expires", 0);
-//			response.sendRedirect(request.getContextPath() + "/Login?action=login");
 			request.getRequestDispatcher("/Login?action=login").forward(request, response);
-		} else {
-			System.out.println("In do filter else where session or username not null" + session + " "
+		} else if (loggedIn && loginOutRequest) {
+			System.out.println("In do filter else where username not null and logging in again" + session + " "
 					+ session.getAttribute("username"));
+			request.getRequestDispatcher("/Logout?action=logout").forward(request, response);
+		} else if (loggedIn && (isLoginPageUrl() || loginPage)) {
+			System.out.println("In do filter else where username not null and logging in again" + session + " "
+					+ session.getAttribute("username"));
+			request.getRequestDispatcher("/Dashboard?action=dashboard").forward(request, response);
+		} else {
+			System.out.println("In do filter else" + session + " " + session.getAttribute("username"));
 			chain.doFilter(request, response);
 		}
+	}
+
+	private boolean isLoginPageUrl() {
+		String requestURL = request.getRequestURL().toString();
+		System.out.println("This is the requesturl in isLoginPageUrl method " + requestURL);
+		for (String loginPageUrl : loginPageUrls) {
+			if (requestURL.contains(loginPageUrl)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean isLoginRequiredUrl() {
+		String requestURL = request.getRequestURL().toString();
+
+		for (String loginRequiredUrl : loginRequiredUrls) {
+			if (requestURL.contains(loginRequiredUrl)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

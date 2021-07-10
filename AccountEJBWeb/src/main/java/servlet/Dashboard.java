@@ -38,23 +38,10 @@ public class Dashboard extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String action = request.getParameter("action");
-		String encode = response.encodeURL(request.getContextPath());
+//		String encode = response.encodeURL(request.getContextPath());
 		switch (action) {
-		case "logout":
-			System.out.println("In logout in dashboard servlet");
-			request.getSession().invalidate();
-			response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-			response.setHeader("Pragma", "no-cache");
-			response.setDateHeader("Expires", 0);
-			response.sendRedirect(encode + "/Login?action=login");
-//			request.getRequestDispatcher(encode + "/Login?action=login").forward(request, response);
-//			response.sendRedirect("login.jsp");
-			break;
 		case "dashboard":
 			System.out.println("In dashboard in dashboard servlet");
-//			accountDetails(request, response);
-//			request.getRequestDispatcher(encode + "/Dashboard?action=dashboard").forward(request, response);
-//			request.getRequestDispatcher("home.jsp").forward(request, response);
 			request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
 			break;
 		case "showAll":

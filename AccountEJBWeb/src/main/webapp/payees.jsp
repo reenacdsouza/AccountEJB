@@ -8,7 +8,7 @@ response.setHeader("Pragma", "no-cache");
 response.setDateHeader("Expires", 0);
 %>
 <div class="wrapper">
-	<header class="header">Account Front End!</header>
+	<header class="header">Account Payees</header>
 	<article class="main">
 		<p>
 			Username:
@@ -20,6 +20,5 @@ response.setDateHeader("Expires", 0);
 				All Accounts.</a> <br />
 		</p>
 	</article>
-	<aside class="aside aside-1">Aside 1</aside>
 	<footer class="footer">©2021 Web Exchange Ltd. webXchange</footer>
 </div>

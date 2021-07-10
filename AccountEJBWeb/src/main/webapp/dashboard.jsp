@@ -20,11 +20,5 @@ response.setDateHeader("Expires", 0);
 				All Accounts.</a> <br />
 		</p>
 	</article>
-	<aside class="aside aside-1">
-	<ul class="vnav">
-  <li><a href="#">Deposit</a></li>
-  <li><a href="#">Transfer</a></li>
-  <li><a href="#">Withdraw</a></li>
-</ul></aside>
 	<footer class="footer">©2021 Web Exchange Ltd. webXchange</footer>
 </div>
