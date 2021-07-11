@@ -7,6 +7,6 @@ import javax.ejb.Remote;
 
 @Remote
 public interface AccountDTORemote {
-	public List<Map<String, String>> allAccounts();
+	public List<Map<String, String>> custAllAccounts(int custId);
 
 }

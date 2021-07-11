@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -41,11 +40,8 @@ public class Dashboard extends HttpServlet {
 //		String encode = response.encodeURL(request.getContextPath());
 		switch (action) {
 		case "dashboard":
-			System.out.println("In dashboard in dashboard servlet");
-			request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
-			break;
-		case "showAll":
-			accountDetails(request, response);
+			System.out.println("In dashboard case in dashboard servlet");
+			custAccountBalances(request, response);
 			break;
 		default:
 			break;
@@ -61,33 +57,32 @@ public class Dashboard extends HttpServlet {
 		doGet(request, response);
 	}
 
-	private void accountDetails(HttpServletRequest request, HttpServletResponse response)
+	private void custAccountBalances(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		String tableStr = new String();
-		List<Map<String, String>> acclist = accDTO.allAccounts();
-		// now including the list inside an HTML table [as a String]
-		tableStr += "<table border='1'>";
-		tableStr += "<tr><td>Account Number</td><td>Current Balance</td><td>Account Type</td></tr>";
-		for (int i = 0; i < acclist.size(); i++) {
-			tableStr += "<tr><td>" + acclist.get(i).get("number") + "</td>" + "<td>" + acclist.get(i).get("balance")
-					+ "</td>" + "<td>" + acclist.get(i).get("type") + "</td></tr>";
+		System.out.println("In custAccountBalances in dashboard servlet");
+		int custId = (int) request.getSession().getAttribute("custId");
+		String fname = (String) request.getSession().getAttribute("fname");
+		String lname = (String) request.getSession().getAttribute("lname");
+		request.setAttribute("fname", fname);
+		request.setAttribute("lname", lname);
+		List<Map<String, String>> accList = accDTO.custAllAccounts(custId);
+		if (accList.contains("errorMap")) {
+			Map<String, String> errorMap = accList.get(0);
+			if (errorMap.containsKey("error")) {
+				request.setAttribute("error", errorMap.get("error"));
+				System.out.println(
+						"In custAccountBalances error condition in dashboard servlet" + request.getAttribute("error"));
+				getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
+			} else if(errorMap.containsKey("failure")) {
+				request.setAttribute("failure", errorMap.get("failure"));
+				System.out.println("In failure in dashboard servlet custAccountBalances" + request.getAttribute("failure"));
+				getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
+			}
+		} else {
+			System.out.println("In success in else in dashboard servlet custAccountBalances");
+			request.setAttribute("accList", accList);
+			request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
 		}
-		tableStr += "</table>";
-
-		response.setContentType("text/html;charset=UTF-8");
-
-		PrintWriter out = response.getWriter();
-		out.println("<html>");
-		out.println("<head>");
-		out.println("<title>Dashboard</title>");
-		out.println("<head>");
-		// showing the Account Details as a list
-		out.println("Account List Summary @ " + new java.util.Date() + "<br/>" + tableStr);
-		out.println("<body>");
-		out.println("</body>");
-		out.println("</html>");
-		out.close();
 
 	}
 

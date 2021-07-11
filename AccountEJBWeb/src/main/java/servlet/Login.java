@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.ejb.EJB;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -62,6 +63,9 @@ public class Login extends HttpServlet {
 		String password = request.getParameter("password");
 		String encode = response.encodeURL(request.getContextPath());
 		Map<String, String> custMap = loginDTO.verifyUserAuth(username, password);
+		int custId = Integer.parseInt(custMap.get("id"));
+		String fname = custMap.get("first_name");
+		String lname = custMap.get("last_name");
 		if (custMap.containsKey("error")) {
 			System.out.println("In error in login servlet authenticate"+request.getAttribute("error"));
 			request.setAttribute("error", custMap.get("error"));
@@ -76,13 +80,9 @@ public class Login extends HttpServlet {
 			HttpSession session = request.getSession(true);
 			session.setMaxInactiveInterval(300);
 			session.setAttribute("username", username);
-			session.setAttribute("id", custMap.get("id"));
-			session.setAttribute("username", custMap.get("username"));
-			session.setAttribute("first_name", custMap.get("first_name"));
-			session.setAttribute("last_name", custMap.get("last_name"));
-			session.setAttribute("passport_number", custMap.get("passport_number"));
-			session.setAttribute("phone", custMap.get("phone"));
-			session.setAttribute("email", custMap.get("email"));
+			session.setAttribute("custId", custId);
+			session.setAttribute("fname",fname);
+			session.setAttribute("lname",lname);
 			response.sendRedirect(encode + "/Dashboard?action=dashboard");
 		}
 }

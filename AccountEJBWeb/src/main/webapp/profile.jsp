@@ -20,5 +20,5 @@ response.setDateHeader("Expires", 0);
 				All Accounts.</a> <br />
 		</p>
 	</article>
-	<footer class="footer">©2021 Web Exchange Ltd. webXchange</footer>
+	<footer class="footer">©2021 MultiCurrency Accounts Ltd. multiCurrencyXchange</footer>
 </div>

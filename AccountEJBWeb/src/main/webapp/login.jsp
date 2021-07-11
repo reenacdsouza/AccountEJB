@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,16 +16,37 @@
 		out.println(request.getAttribute("failure"));
 	}
 	%>
-		<div align=center>
+	<div>
+		<h1 class="title">MultiCurrency Accounts</h1>
+	</div>
+	<div align=center>
 		<form action="<%=request.getContextPath()%>/Login" method="post">
-			<h1 class="title">webXchange</h1>
-			<b>Username</b><br /> <input type="text" name="username" required><br />
-			<b>Password</b><br /> <input type="password" name="password"
-				required><br /> <br /> <input type="hidden" name="action"
-				value="loginCheck">
-			<button type="submit">Login</button>
+			<div>
+				<b>Username</b>
+			</div>
+			<br/>
+			<div>
+				<input maxlength="12" size="12" type="text" name="username" required>
+			</div>
+			<br />
+			<div>
+				<b>Password</b>
+			</div>
+			<br />
+			<div>
+				<input maxlength="12" size="12" type="password" name="password" required>
+			</div>
+			<br />
+			<div>
+				<input type="hidden" name="action" value="loginCheck">
+			</div>
+			<div>
+				<button type="submit">Login</button>
+			</div>
 		</form>
-		</div>
-		<footer class="footer">©2021 Web Exchange Ltd. webXchange</footer>
+	</div>
+	<br/>
+	<footer class="footer">©2021 MultiCurrency Accounts Ltd.
+		multiCurrencyXchange</footer>
 </body>
 </html>

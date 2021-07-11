@@ -12,8 +12,14 @@ response.setDateHeader("Expires", 0);
 	<article class="main">
 		<p>
 			404 Not Found 
-			Error: <% out.println(request.getAttribute("error"));%>
+			Error: <% 
+			if(request.getAttribute("error") != null){
+			out.println(request.getAttribute("error"));
+			}else if(request.getAttribute("failure") != null){
+				out.println(request.getAttribute("failure"));
+			}
+			%>
 		</p>
 	</article>
-	<footer class="footer">©2021 Web Exchange Ltd. webXchange</footer>
+	<footer class="footer">©2021 MultiCurrency Accounts Ltd. multiCurrencyXchange</footer>
 </div>
