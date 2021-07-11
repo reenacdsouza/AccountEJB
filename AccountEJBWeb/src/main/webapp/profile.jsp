@@ -8,17 +8,38 @@ response.setHeader("Pragma", "no-cache");
 response.setDateHeader("Expires", 0);
 %>
 <div class="wrapper">
-	<header class="header">Profile</header>
 	<article class="main">
-		<p>
-			Username:
-			<%=request.getSession().getAttribute("username")%>
-			First Name:
-			<%=request.getSession().getAttribute("first_name")%>
-			<br /> <br /> <a
-				href="<%=request.getContextPath()%>/Dashboard?action=showAll">Show
-				All Accounts.</a> <br />
-		</p>
+		<div class="header">
+			<p>Profile Details</p>
+		</div>
+		<table>
+			<tr>
+				<td>Customer Id</td>
+				<td><c:out value="${custId}" /></td>
+			</tr>
+			<tr>
+				<td>Username</td>
+				<td><c:out value="${username}" /></td>
+			</tr>
+			<tr>
+				<td>Name</td>
+				<td><c:out value="${fname}" /> <c:out value=" " /> <c:out
+						value="${lname}" /></td>
+			</tr>
+			<tr>
+				<td>Passport Number</td>
+				<td><c:out value="${passnumber}" /></td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td><c:out value="${phone}" /></td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td><c:out value="${email}" /></td>
+			</tr>
+		</table>
 	</article>
-	<footer class="footer">©2021 MultiCurrency Accounts Ltd. multiCurrencyXchange</footer>
+	<footer class="footer">©2021 MultiCurrency Accounts Ltd.
+		multiCurrencyXchange</footer>
 </div>

@@ -8,17 +8,31 @@ response.setHeader("Pragma", "no-cache");
 response.setDateHeader("Expires", 0);
 %>
 <div class="wrapper">
-	<header class="header">Account Payees</header>
 	<article class="main">
+		<div class="header">
 		<p>
-			Username:
-			<%=request.getSession().getAttribute("username")%>
-			First Name:
-			<%=request.getSession().getAttribute("first_name")%>
-			<br /> <br /> <a
-				href="<%=request.getContextPath()%>/Dashboard?action=showAll">Show
-				All Accounts.</a> <br />
+			<c:out value="${fname}" />
+			<c:out value=" " />
+			<c:out value="${lname}" />
 		</p>
+		</div>
+		<table>
+			<caption>Payees</caption>
+			<tr>
+				<th>Payee Name</th>
+				<th>Branch Name</th>
+				<th>Sort Code</th>
+				<th>Account Number</th>
+			</tr>
+			<c:forEach var="custPayeeMap" items="${payeeList}">
+			<tr>
+				<td><c:out value="${custPayeeMap.name}"/></td>
+				<td><c:out value="${custPayeeMap.branchName}"/></td>
+				<td><c:out value="${custPayeeMap.sortCode}"/></td>
+				<td><c:out value="${custPayeeMap.accountNumber}"/></td>
+			</tr>
+			</c:forEach>
+		</table>
 	</article>
 	<footer class="footer">©2021 MultiCurrency Accounts Ltd. multiCurrencyXchange</footer>
 </div>

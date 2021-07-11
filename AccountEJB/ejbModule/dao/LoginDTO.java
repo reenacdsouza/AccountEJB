@@ -47,6 +47,9 @@ public class LoginDTO implements LoginDTORemote {
 	            custMap.put("username", cust.getUsername());
 	            custMap.put("first_name", cust.getFirstName());
 	            custMap.put("last_name", cust.getLastName());
+	            custMap.put("passport_number", cust.getPassportNumber());
+	            custMap.put("phone", cust.getPhone());
+	            custMap.put("email", cust.getEmail());
 			}
 		}catch(Exception E) {
 			custMap.put("error", "An error occured while verifying your login credentials. Please try again. Error: "+ E.getMessage());

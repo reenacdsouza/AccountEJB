@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.ejb.EJB;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -66,6 +65,9 @@ public class Login extends HttpServlet {
 		int custId = Integer.parseInt(custMap.get("id"));
 		String fname = custMap.get("first_name");
 		String lname = custMap.get("last_name");
+		String passnumber = custMap.get("passport_number");
+		String phone = custMap.get("phone");
+		String email = custMap.get("email");
 		if (custMap.containsKey("error")) {
 			System.out.println("In error in login servlet authenticate"+request.getAttribute("error"));
 			request.setAttribute("error", custMap.get("error"));
@@ -83,7 +85,11 @@ public class Login extends HttpServlet {
 			session.setAttribute("custId", custId);
 			session.setAttribute("fname",fname);
 			session.setAttribute("lname",lname);
+			session.setAttribute("passnumber",passnumber);
+			session.setAttribute("phone",phone);
+			session.setAttribute("email",email);
 			response.sendRedirect(encode + "/Dashboard?action=dashboard");
+//			request.getRequestDispatcher(encode + "/Dashboard?action=dashboard").forward(request, response);
 		}
 }
 

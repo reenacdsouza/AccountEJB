@@ -19,7 +19,7 @@
 			href="<%=request.getContextPath()%>/Transactions?action=transactions">Transactions</a></li>
 		<li><a href="<%=request.getContextPath()%>/Payees?action=payees">Payees</a></li>
 		<li><a
-			href="<%=request.getContextPath()%>/Profile?action=profile">Profile</a></li>
+			href="<%=request.getContextPath()%>/Dashboard?action=profile">Profile</a></li>
 		<li><a href="<%=request.getContextPath()%>/Logout?action=logout">Logout</a></li>
 	</ul>
 </body>

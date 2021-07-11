@@ -52,7 +52,7 @@ public class AccountDTO implements AccountDTORemote {
 				for (int i = 0; i < accounts.size(); i++) {
 					acc = accounts.get(i); // account object
 					Map<String, String> custAccMap = new HashMap<>(); // HashMap to hold Account details
-					custAccMap.put("accountNumer", acc.getAccountNumber().toString()); // account number
+					custAccMap.put("accountNumber", acc.getAccountNumber().toString()); // account number
 					custAccMap.put("accountType", acc.getAccountType().getType()); // account type
 					custAccMap.put("accountBalance", acc.getCurrentBalance().toString()); // account balance
 					accList.add(custAccMap); // add the single account map to the list

@@ -41,7 +41,11 @@ public class Dashboard extends HttpServlet {
 		switch (action) {
 		case "dashboard":
 			System.out.println("In dashboard case in dashboard servlet");
-			custAccountBalances(request, response);
+			getCustAccounts(request, response);
+			break;
+		case "profile":
+			System.out.println("In profile case in dashboard servlet do get");
+			request.getRequestDispatcher("/profile.jsp").forward(request, response);
 			break;
 		default:
 			break;
@@ -57,9 +61,9 @@ public class Dashboard extends HttpServlet {
 		doGet(request, response);
 	}
 
-	private void custAccountBalances(HttpServletRequest request, HttpServletResponse response)
+	private void getCustAccounts(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("In custAccountBalances in dashboard servlet");
+		System.out.println("In getCustAccounts in dashboard servlet");
 		int custId = (int) request.getSession().getAttribute("custId");
 		String fname = (String) request.getSession().getAttribute("fname");
 		String lname = (String) request.getSession().getAttribute("lname");
@@ -71,15 +75,16 @@ public class Dashboard extends HttpServlet {
 			if (errorMap.containsKey("error")) {
 				request.setAttribute("error", errorMap.get("error"));
 				System.out.println(
-						"In custAccountBalances error condition in dashboard servlet" + request.getAttribute("error"));
+						"In getCustAccounts error condition in dashboard servlet" + request.getAttribute("error"));
 				getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
-			} else if(errorMap.containsKey("failure")) {
+			} else if (errorMap.containsKey("failure")) {
 				request.setAttribute("failure", errorMap.get("failure"));
-				System.out.println("In failure in dashboard servlet custAccountBalances" + request.getAttribute("failure"));
+				System.out.println(
+						"In failure in dashboard servlet getCustAccounts" + request.getAttribute("failure"));
 				getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
 			}
 		} else {
-			System.out.println("In success in else in dashboard servlet custAccountBalances");
+			System.out.println("In success in else in dashboard servlet getCustAccounts");
 			request.setAttribute("accList", accList);
 			request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
 		}
