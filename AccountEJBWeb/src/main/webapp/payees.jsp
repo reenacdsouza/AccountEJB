@@ -1,6 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:import url="include/header.jsp">
-	<c:param name="title" value="Payees" />
 </c:import>
 <%
 response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

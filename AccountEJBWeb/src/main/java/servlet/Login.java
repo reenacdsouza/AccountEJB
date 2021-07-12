@@ -89,7 +89,6 @@ public class Login extends HttpServlet {
 			session.setAttribute("phone",phone);
 			session.setAttribute("email",email);
 			response.sendRedirect(encode + "/Dashboard?action=dashboard");
-//			request.getRequestDispatcher(encode + "/Dashboard?action=dashboard").forward(request, response);
 		}
 }
 

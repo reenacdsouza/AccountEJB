@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login</title>
+<title>MultiCurrency Accounts</title>
 <link href="assets/webexchange.css" rel="stylesheet">
 </head>
 <body>

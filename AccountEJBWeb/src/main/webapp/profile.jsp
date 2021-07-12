@@ -1,6 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:import url="include/header.jsp">
-	<c:param name="title" value="Profile" />
 </c:import>
 <%
 response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -10,9 +9,14 @@ response.setDateHeader("Expires", 0);
 <div class="wrapper">
 	<article class="main">
 		<div class="header">
-			<p>Profile Details</p>
+			<p>
+				<c:out value="${fname}" />
+				<c:out value=" " />
+				<c:out value="${lname}" />
+			</p>
 		</div>
 		<table>
+		<caption>Profile Details</caption>
 			<tr>
 				<td>Customer Id</td>
 				<td><c:out value="${custId}" /></td>

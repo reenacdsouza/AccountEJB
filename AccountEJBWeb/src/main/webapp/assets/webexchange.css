@@ -3,9 +3,19 @@
 .nav {
 	display: flex;
 	flex-flow: row wrap;
-	justify-content: flex-start;
 	list-style: none;
 	margin: 0;
+}
+
+.navbegin {
+	justify-content: flex-begin;
+	background: #63a2b8;
+	font-family: sans-serif;
+	font-weight: normal;
+}
+
+.navend {
+	justify-content: flex-end;
 	background: #00bfff;
 }
 
@@ -76,7 +86,7 @@
 
 @media all and (min-width: 800px) {
 	.main {
-		flex: 4 0px;
+		flex: 3 0px;
 	}
 	.main {
 		order: 1;
@@ -86,22 +96,26 @@
 	}
 }
 
+@media all and (min-width: 600px) {
+
+}
+
 body {
 	padding: 2em;
 }
 
 table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	width: 100%;
 }
 
 td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
+	border: 1px solid #dddddd;
+	text-align: left;
+	padding: 8px;
 }
 
 tr:nth-child(even) {
-  background-color: #dddddd;
+	background-color: #dddddd;
 }
