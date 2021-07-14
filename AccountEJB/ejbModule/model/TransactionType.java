@@ -15,6 +15,7 @@ public class TransactionType implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	@Column(name="source_description")
@@ -25,9 +26,9 @@ public class TransactionType implements Serializable {
 
 	private String type;
 
-	//bi-directional many-to-one association to Transaction
+	//bi-directional many-to-one association to AccountTransaction
 	@OneToMany(mappedBy="transactionType")
-	private List<Transaction> transactions;
+	private List<AccountTransaction> accountTransactions;
 
 	public TransactionType() {
 	}
@@ -64,26 +65,26 @@ public class TransactionType implements Serializable {
 		this.type = type;
 	}
 
-	public List<Transaction> getTransactions() {
-		return this.transactions;
+	public List<AccountTransaction> getAccountTransactions() {
+		return this.accountTransactions;
 	}
 
-	public void setTransactions(List<Transaction> transactions) {
-		this.transactions = transactions;
+	public void setAccountTransactions(List<AccountTransaction> accountTransactions) {
+		this.accountTransactions = accountTransactions;
 	}
 
-	public Transaction addTransaction(Transaction transaction) {
-		getTransactions().add(transaction);
-		transaction.setTransactionType(this);
+	public AccountTransaction addAccountTransaction(AccountTransaction accountTransaction) {
+		getAccountTransactions().add(accountTransaction);
+		accountTransaction.setTransactionType(this);
 
-		return transaction;
+		return accountTransaction;
 	}
 
-	public Transaction removeTransaction(Transaction transaction) {
-		getTransactions().remove(transaction);
-		transaction.setTransactionType(null);
+	public AccountTransaction removeAccountTransaction(AccountTransaction accountTransaction) {
+		getAccountTransactions().remove(accountTransaction);
+		accountTransaction.setTransactionType(null);
 
-		return transaction;
+		return accountTransaction;
 	}
 
 }

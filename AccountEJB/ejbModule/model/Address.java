@@ -2,19 +2,21 @@ package model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.List;
 
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The persistent class for the Address database table.
  * 
  */
 @Entity
-@NamedQuery(name="Address.findAll", query="SELECT a FROM Address a")
+@NamedQuery(name = "Address.findAll", query = "SELECT a FROM Address a")
 public class Address implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private String city;
@@ -27,9 +29,9 @@ public class Address implements Serializable {
 
 	private String street;
 
-	//bi-directional many-to-many association to Customer
-	@ManyToMany(mappedBy="addresses")
-	private List<Customer> customers;
+	// bi-directional many-to-many association to Customer
+	@ManyToMany(mappedBy = "addresses")
+	private Set<Customer> customers = new HashSet<Customer>();
 
 	public Address() {
 	}
@@ -82,12 +84,22 @@ public class Address implements Serializable {
 		this.street = street;
 	}
 
-	public List<Customer> getCustomers() {
+	public Set<Customer> getCustomers() {
 		return this.customers;
 	}
 
-	public void setCustomers(List<Customer> customers) {
+	public void setCustomers(Set<Customer> customers) {
 		this.customers = customers;
+	}
+
+	public void addCustomer(Customer customer) {
+		this.customers.add(customer);
+		customer.getAddresses().add(this);
+	}
+
+	public void removeCustomer(Customer customer) {
+		this.customers.remove(customer);
+		customer.getAddresses().remove(this);
 	}
 
 }

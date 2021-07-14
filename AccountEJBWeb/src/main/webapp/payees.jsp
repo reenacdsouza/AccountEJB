@@ -23,7 +23,7 @@ response.setDateHeader("Expires", 0);
 				<th>Sort Code</th>
 				<th>Account Number</th>
 			</tr>
-			<c:forEach var="custPayeeMap" items="${payeeList}">
+			<c:forEach var="custPayeeMap" items="${payeeSet}">
 			<tr>
 				<td><c:out value="${custPayeeMap.name}"/></td>
 				<td><c:out value="${custPayeeMap.branchName}"/></td>

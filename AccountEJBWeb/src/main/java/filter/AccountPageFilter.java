@@ -32,7 +32,6 @@ public class AccountPageFilter implements Filter {
 	public void destroy() {
 	}
 
-//	private static final String[] loginRequiredUrls = { "/Dashboard", "/Payees", "/Transactions","/Error","/dashboard.jsp", "/error.jsp", "/payees.jsp", "/profile.jsp", "/transactions.jsp" };
 	private static final String[] loginRequiredUrls = { "/Dashboard", "/Payees", "/Transactions",
 			"/Error" };
 	private static final String[] loginPageUrls = { "/Login", "/login.jsp" };

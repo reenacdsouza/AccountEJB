@@ -7,15 +7,16 @@ import java.sql.Timestamp;
 
 
 /**
- * The persistent class for the Transaction database table.
+ * The persistent class for the AccountTransaction database table.
  * 
  */
 @Entity
-@NamedQuery(name="Transaction.findAll", query="SELECT t FROM Transaction t")
-public class Transaction implements Serializable {
+@NamedQuery(name="AccountTransaction.findAll", query="SELECT a FROM AccountTransaction a")
+public class AccountTransaction implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	private BigDecimal credit;
@@ -39,7 +40,7 @@ public class Transaction implements Serializable {
 	@ManyToOne
 	private TransactionType transactionType;
 
-	public Transaction() {
+	public AccountTransaction() {
 	}
 
 	public int getId() {

@@ -22,7 +22,7 @@ response.setDateHeader("Expires", 0);
 				<th>Account</th>
 				<th>Balance</th>
 			</tr>
-			<c:forEach var="custAccMap" items="${accList}">
+			<c:forEach var="custAccMap" items="${accSet}">
 				<tr>
 					<td><c:out value="${custAccMap.accountType}" /></td>
 					<td><c:out value="${custAccMap.accountBalance}" /></td>
@@ -32,7 +32,7 @@ response.setDateHeader("Expires", 0);
 	</article>
 	<ul class="nav navbegin">
 		<li><a
-			href="<%=request.getContextPath()%>/Dashboard?action=dashboard">Add Account</a></li>
+			href="<%=request.getContextPath()%>/Dashboard?action=loadcreate">Add Account</a></li>
 		<li><a
 			href="<%=request.getContextPath()%>/Transactions?action=transactions">Transfer</a></li>
 		<li><a href="<%=request.getContextPath()%>/Payees?action=payees">Withdraw</a></li>

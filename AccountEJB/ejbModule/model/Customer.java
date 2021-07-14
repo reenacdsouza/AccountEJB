@@ -2,30 +2,32 @@ package model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.List;
 
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The persistent class for the Customer database table.
  * 
  */
 @Entity
-@NamedQuery(name="Customer.findAll", query="SELECT c FROM Customer c")
+@NamedQuery(name = "Customer.findAll", query = "SELECT c FROM Customer c")
 public class Customer implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private String email;
 
-	@Column(name="first_name")
+	@Column(name = "first_name")
 	private String firstName;
 
-	@Column(name="last_name")
+	@Column(name = "last_name")
 	private String lastName;
 
-	@Column(name="passport_number")
+	@Column(name = "passport_number")
 	private String passportNumber;
 
 	private String password;
@@ -34,35 +36,29 @@ public class Customer implements Serializable {
 
 	private String username;
 
-	//bi-directional many-to-many association to Account
+	// bi-directional many-to-many association to Account
 	@ManyToMany
-	@JoinTable(
-		name="Customer_has_Account"
-		, joinColumns={
-			@JoinColumn(name="Customer_id")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="Account_id")
-			}
-		)
-	private List<Account> accounts;
+	@JoinTable(name = "Customer_has_Account", joinColumns = {
+			@JoinColumn(name = "Customer_id") }, inverseJoinColumns = { @JoinColumn(name = "Account_id") })
+	private Set<Account> accounts = new HashSet<Account>();
 
-	//bi-directional many-to-many association to Address
+	// bi-directional many-to-many association to Address
 	@ManyToMany
-	@JoinTable(
-		name="Customer_has_Address"
-		, joinColumns={
-			@JoinColumn(name="Customer_id")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="Address_id")
-			}
-		)
-	private List<Address> addresses;
+	@JoinTable(name = "Customer_has_Address", joinColumns = {
+			@JoinColumn(name = "Customer_id") }, inverseJoinColumns = { @JoinColumn(name = "Address_id") })
+	private Set<Address> addresses = new HashSet<Address>();
 
-	//bi-directional many-to-one association to ExternalPayee
-	@OneToMany(mappedBy="customer")
-	private List<ExternalPayee> externalPayees;
+	// bi-directional many-to-many association to ExternalBiller
+	@ManyToMany
+	@JoinTable(name = "Customer_has_ExternalBiller", joinColumns = {
+			@JoinColumn(name = "Customer_id") }, inverseJoinColumns = { @JoinColumn(name = "ExternalBiller_id") })
+	private Set<ExternalBiller> externalBillers = new HashSet<ExternalBiller>();
+
+	// bi-directional many-to-many association to ExternalPayee
+	@ManyToMany
+	@JoinTable(name = "Customer_has_ExternalPayee", joinColumns = {
+			@JoinColumn(name = "Customer_id") }, inverseJoinColumns = { @JoinColumn(name = "ExternalPayee_id") })
+	private Set<ExternalPayee> externalPayees = new HashSet<ExternalPayee>();
 
 	public Customer() {
 	}
@@ -131,42 +127,76 @@ public class Customer implements Serializable {
 		this.username = username;
 	}
 
-	public List<Account> getAccounts() {
+	public Set<Account> getAccounts() {
 		return this.accounts;
 	}
 
-	public void setAccounts(List<Account> accounts) {
+	public void setAccounts(Set<Account> accounts) {
 		this.accounts = accounts;
 	}
 
-	public List<Address> getAddresses() {
+	public void addAccount(Account account) {
+		this.accounts.add(account);
+		account.getCustomers().add(this);
+	}
+
+	public void removeAccount(Account account) {
+		this.accounts.remove(account);
+		account.getCustomers().remove(this);
+	}
+
+	public Set<Address> getAddresses() {
 		return this.addresses;
 	}
 
-	public void setAddresses(List<Address> addresses) {
+	public void setAddresses(Set<Address> addresses) {
 		this.addresses = addresses;
 	}
 
-	public List<ExternalPayee> getExternalPayees() {
+	public void addAddress(Address address) {
+		this.addresses.add(address);
+		address.getCustomers().add(this);
+	}
+
+	public void removeAddress(Address address) {
+		this.addresses.remove(address);
+		address.getCustomers().remove(this);
+	}
+
+	public Set<ExternalBiller> getExternalBillers() {
+		return this.externalBillers;
+	}
+
+	public void setExternalBillers(Set<ExternalBiller> externalBillers) {
+		this.externalBillers = externalBillers;
+	}
+	
+	public void addExternalBiller(ExternalBiller externalBiller) {
+		this.externalBillers.add(externalBiller);
+		externalBiller.getCustomers().add(this);
+	}
+
+	public void removeExternalBiller(ExternalBiller externalBiller) {
+		this.externalBillers.remove(externalBiller);
+		externalBiller.getCustomers().remove(this);
+	}
+
+	public Set<ExternalPayee> getExternalPayees() {
 		return this.externalPayees;
 	}
 
-	public void setExternalPayees(List<ExternalPayee> externalPayees) {
+	public void setExternalPayees(Set<ExternalPayee> externalPayees) {
 		this.externalPayees = externalPayees;
 	}
-
-	public ExternalPayee addExternalPayee(ExternalPayee externalPayee) {
-		getExternalPayees().add(externalPayee);
-		externalPayee.setCustomer(this);
-
-		return externalPayee;
+	
+	public void addExternalPayee(ExternalPayee externalPayee) {
+		this.externalPayees.add(externalPayee);
+		externalPayee.getCustomers().add(this);
 	}
 
-	public ExternalPayee removeExternalPayee(ExternalPayee externalPayee) {
-		getExternalPayees().remove(externalPayee);
-		externalPayee.setCustomer(null);
-
-		return externalPayee;
+	public void removeExternalPayee(ExternalPayee externalPayee) {
+		this.externalPayees.remove(externalPayee);
+		externalPayee.getCustomers().remove(this);
 	}
 
 }

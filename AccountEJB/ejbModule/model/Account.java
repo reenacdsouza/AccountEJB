@@ -5,7 +5,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -18,6 +20,7 @@ public class Account implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	@Column(name="account_number")
@@ -38,13 +41,13 @@ public class Account implements Serializable {
 	@JoinColumn(name="CompanyDetails_sort_code")
 	private Company_Detail companyDetail;
 
+	//bi-directional many-to-one association to AccountTransaction
+	@OneToMany(mappedBy="account")
+	private List<AccountTransaction> accountTransactions;
+
 	//bi-directional many-to-many association to Customer
 	@ManyToMany(mappedBy="accounts")
-	private List<Customer> customers;
-
-	//bi-directional many-to-one association to Transaction
-	@OneToMany(mappedBy="account")
-	private List<Transaction> transactions;
+	private Set<Customer> customers = new HashSet<Customer>();
 
 	public Account() {
 	}
@@ -97,34 +100,44 @@ public class Account implements Serializable {
 		this.companyDetail = companyDetail;
 	}
 
-	public List<Customer> getCustomers() {
+	public List<AccountTransaction> getAccountTransactions() {
+		return this.accountTransactions;
+	}
+
+	public void setAccountTransactions(List<AccountTransaction> accountTransactions) {
+		this.accountTransactions = accountTransactions;
+	}
+
+	public AccountTransaction addAccountTransaction(AccountTransaction accountTransaction) {
+		getAccountTransactions().add(accountTransaction);
+		accountTransaction.setAccount(this);
+
+		return accountTransaction;
+	}
+
+	public AccountTransaction removeAccountTransaction(AccountTransaction accountTransaction) {
+		getAccountTransactions().remove(accountTransaction);
+		accountTransaction.setAccount(null);
+
+		return accountTransaction;
+	}
+
+	public Set<Customer> getCustomers() {
 		return this.customers;
 	}
 
-	public void setCustomers(List<Customer> customers) {
+	public void setCustomers(Set<Customer> customers) {
 		this.customers = customers;
 	}
-
-	public List<Transaction> getTransactions() {
-		return this.transactions;
+	
+	public void addCustomer(Customer customer) {
+		this.customers.add(customer);
+		customer.getAccounts().add(this);
 	}
 
-	public void setTransactions(List<Transaction> transactions) {
-		this.transactions = transactions;
-	}
-
-	public Transaction addTransaction(Transaction transaction) {
-		getTransactions().add(transaction);
-		transaction.setAccount(this);
-
-		return transaction;
-	}
-
-	public Transaction removeTransaction(Transaction transaction) {
-		getTransactions().remove(transaction);
-		transaction.setAccount(null);
-
-		return transaction;
+	public void removeCustomer(Customer customer) {
+		this.customers.remove(customer);
+		customer.getAccounts().remove(this);
 	}
 
 }

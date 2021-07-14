@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.List;
 
 
@@ -17,7 +18,7 @@ public class Company_Detail implements Serializable {
 
 	@Id
 	@Column(name="sort_code")
-	private String sortCode;
+	private BigInteger sortCode;
 
 	@Column(name="company_name")
 	private String companyName;
@@ -31,11 +32,11 @@ public class Company_Detail implements Serializable {
 	public Company_Detail() {
 	}
 
-	public String getSortCode() {
+	public BigInteger getSortCode() {
 		return this.sortCode;
 	}
 
-	public void setSortCode(String sortCode) {
+	public void setSortCode(BigInteger sortCode) {
 		this.sortCode = sortCode;
 	}
 
