@@ -1,9 +1,11 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -56,8 +58,116 @@ public class Dashboard extends HttpServlet {
 			System.out.println("In createaccount case in dashboard servlet do get");
 			createCustAccount(request, response);
 			break;
+		case "loadtransaction":
+			System.out.println("In loadtransaction case in dashboard servlet do get");
+			loadTransaction(request, response);
+			break;
+		case "createtransaction":
+			System.out.println("In createtransaction case in dashboard servlet do get");
+			createTransaction(request, response);
+			break;
 		default:
 			break;
+		}
+	}
+
+	private void loadTransaction(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		System.out.println("In loadTransaction in dashboard servlet");
+		String transaction = request.getParameter("transaction");
+		String custAccountNumber = request.getParameter("custAccountNumber");
+//		System.out.println("custAccountNumber from dashboard table row: " + custAccountNumber);
+		String custAccountType = request.getParameter("custAccountType");
+		String custAccountBalance = request.getParameter("custAccountBalance");
+		Map<String, String> transactionMap = new HashMap<String, String>();
+		if (transaction.equals("withdraw")) {
+			System.out.println("In withdraw condition in loadTransaction in dashboard servlet");
+			transactionMap.put("custAccountNumber", custAccountNumber);
+			transactionMap.put("custAccountType", custAccountType);
+			transactionMap.put("custAccountBalance", custAccountBalance);
+			request.setAttribute("transactionMap", transactionMap);
+			getServletContext().getRequestDispatcher("/withdraw.jsp").forward(request, response);
+		} else if (transaction.equals("deposit")) {
+			System.out.println("In deposit condition in loadTransaction in dashboard servlet");
+			transactionMap.put("custAccountNumber", custAccountNumber);
+			transactionMap.put("custAccountType", custAccountType);
+			transactionMap.put("custAccountBalance", custAccountBalance);
+			request.setAttribute("transactionMap", transactionMap);
+			getServletContext().getRequestDispatcher("/deposit.jsp").forward(request, response);
+		} else if (transaction.equals("transfer")) {
+			System.out.println("In transfer condition in loadTransaction in dashboard servlet");
+			transactionMap.put("custAccountNumber", custAccountNumber);
+			transactionMap.put("custAccountType", custAccountType);
+			transactionMap.put("custAccountBalance", custAccountBalance);
+			request.setAttribute("transactionMap", transactionMap);
+			getServletContext().getRequestDispatcher("/transfer.jsp").forward(request, response);
+		}
+	}
+
+	private void createTransaction(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		System.out.println("In createTransaction in dashboard servlet");
+		String transaction_type = request.getParameter("transaction_type");
+		BigInteger account_number = new BigInteger(request.getParameter("account_number"));
+		String account_type = request.getParameter("account_type");
+		BigDecimal amount = new BigDecimal(request.getParameter("amount"));
+
+		Map<String, String> accountTransactionMap = new HashMap<String, String>();
+		Map<String, String> transactionMap = new HashMap<String, String>();
+		transactionMap.put("custAccountNumber", account_number.toString());
+		transactionMap.put("custAccountType", account_type);
+	
+
+		if (transaction_type.equals("withdraw")) {
+			System.out.println("In withdraw condition in createTransaction in dashboard servlet");
+			accountTransactionMap = accDTO.withdraw(account_number, amount);
+			if (accountTransactionMap.containsKey("error")) {
+				System.out.println(
+						"In error in dashboard servlet createTransaction withdraw" + accountTransactionMap.get("error"));
+				transactionMap.put("error", accountTransactionMap.get("error"));
+				getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
+			} else if (accountTransactionMap.containsKey("failure")) {
+				transactionMap.put("failure", accountTransactionMap.get("failure"));
+				System.out.println(
+						"In failure in dashboard servlet createTransaction withdraw" + transactionMap.get("failure"));
+				getServletContext().getRequestDispatcher("/withdraw.jsp").forward(request, response);
+			} else {
+				System.out.println("In success else in dashboard servlet createTransaction withdraw");
+				String accountnumber = account_number.toString();
+				transactionMap.put("success", "Withdrawal Complete");
+				transactionMap.put("newbalance", accountTransactionMap.get("newbalance"));
+				transactionMap.put("custAccountBalance", accountTransactionMap.get("newbalance"));
+				transactionMap.put("accountnumber", accountnumber);
+				transactionMap.put("accounttype", account_type);
+				request.setAttribute("transactionMap", transactionMap);
+				getServletContext().getRequestDispatcher("/withdraw.jsp").forward(request, response);
+			}
+		} else if (transaction_type.equals("deposit")) {
+			System.out.println("In deposit condition in createTransaction in dashboard servlet");
+			accountTransactionMap = accDTO.deposit(account_number, amount);
+			if (accountTransactionMap.containsKey("error")) {
+				System.out.println(
+						"In error in dashboard servlet createTransaction deposit" + accountTransactionMap.get("error"));
+				transactionMap.put("error", accountTransactionMap.get("error"));
+				getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
+			} else if (transactionMap.containsKey("failure")) {
+				transactionMap.put("failure", accountTransactionMap.get("failure"));
+				System.out.println(
+						"In failure in dashboard servlet createTransaction deposit" + transactionMap.get("failure"));
+				getServletContext().getRequestDispatcher("/deposit.jsp").forward(request, response);
+			} else {
+				System.out.println("In success else in dashboard servlet createTransaction deposit");
+				String accountnumber = account_number.toString();
+				transactionMap.put("success", "Deposit Complete");
+				transactionMap.put("newbalance", accountTransactionMap.get("newbalance"));
+				transactionMap.put("custAccountBalance", accountTransactionMap.get("newbalance"));
+				transactionMap.put("accountnumber", accountnumber);
+				transactionMap.put("accounttype", account_type);
+				request.setAttribute("transactionMap", transactionMap);
+				getServletContext().getRequestDispatcher("/deposit.jsp").forward(request, response);
+			}
+		} else if (transaction_type.equals("transfer")) {
+			System.out.println("In transfer condition in createTransaction in dashboard servlet");
 		}
 	}
 
@@ -93,10 +203,6 @@ public class Dashboard extends HttpServlet {
 			throws ServletException, IOException {
 		System.out.println("In getCustAccounts in dashboard servlet");
 		int custId = (int) request.getSession().getAttribute("custId");
-		String fname = (String) request.getSession().getAttribute("fname");
-		String lname = (String) request.getSession().getAttribute("lname");
-		request.setAttribute("fname", fname);
-		request.setAttribute("lname", lname);
 		Set<Map<String, String>> accSet = accDTO.custAllAccounts(custId);
 		if (accSet.contains("errorMap")) {
 			System.out.println("In getCustAccounts accountset contains errorMap condition");

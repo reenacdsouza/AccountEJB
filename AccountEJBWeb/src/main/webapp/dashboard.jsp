@@ -10,35 +10,43 @@ response.setDateHeader("Expires", 0);
 <div class="wrapper">
 	<article class="main">
 		<div class="header">
-			<p>
+			<h2>
 				<c:out value="${fname}" />
 				<c:out value=" " />
 				<c:out value="${lname}" />
-			</p>
+			</h2>
 		</div>
-		<table>
-			<caption>Account Balances</caption>
-			<tr>
-				<th>Account</th>
-				<th>Balance</th>
-			</tr>
+		<div>
+			<h3 class="bodytitle">Account Balances</h3>
+		</div>
+		<div class="table">
+			<div class="thead">
+				<div class="tr">
+					<div class="td">Account Number</div> 
+					<div class="td">Currency</div> 
+					<div class="td">Account Balance</div> 
+					<div class="td">Actions</div>
+				</div>
+			</div>
+			<div class="tbody">
 			<c:forEach var="custAccMap" items="${accSet}">
-				<tr>
-					<td><c:out value="${custAccMap.accountType}" /></td>
-					<td><c:out value="${custAccMap.accountBalance}" /></td>
-				</tr>
+				<form class="tr" action="<%=request.getContextPath()%>/Dashboard?action=loadtransaction" method="post">
+					<div class="td"><c:out value="${custAccMap.accountNumber}" /></div>
+					<input type="hidden" name="custAccountNumber" value="${custAccMap.accountNumber}" />
+					<div class="td"><c:out value="${custAccMap.accountType}" /></div>
+					<input type="hidden" name="custAccountType" value="${custAccMap.accountType}" />
+					<div class="td"><c:out value="${custAccMap.accountBalance}" /></div>
+					<input type="hidden" name="custAccountBalance" value="${custAccMap.accountBalance}" />
+					<div class="td">
+						<span><button name="transaction" type="submit" value="deposit">Deposit</button></span>
+						<span><button name="transaction" type="submit" value="withdraw">Withdraw</button></span>
+						<span><button name="transaction" type="submit" value="transfer">Transfer</button></span>
+					</div>
+				</form>
 			</c:forEach>
-		</table>
+			</div>
+		</div>
 	</article>
-	<ul class="nav navbegin">
-		<li><a
-			href="<%=request.getContextPath()%>/Dashboard?action=loadcreate">Add Account</a></li>
-		<li><a
-			href="<%=request.getContextPath()%>/Transactions?action=transactions">Transfer</a></li>
-		<li><a href="<%=request.getContextPath()%>/Payees?action=payees">Withdraw</a></li>
-		<li><a
-			href="<%=request.getContextPath()%>/Dashboard?action=profile">Deposit</a></li>
-	</ul>
 	<footer class="footer">©2021 MultiCurrency Accounts Ltd.
 		multiCurrencyXchange</footer>
 </div>

@@ -34,9 +34,8 @@ response.setDateHeader("Expires", 0);
 				<br />
 				<br/> 
 				<label for="dep">Deposit: </label> 
-				<input type="number" min="0.00" value="0.00" step=".01" id="dep" name="dep" required>
-				<br /> 
-				<input type="hidden" name="action" value="createaccount"> 
+				<input type="number" min="1.00" value="0.00" step=".01" id="dep" name="dep" required>
+				<br />
 				<br />
 				<button type="submit">Submit</button>
 			</form>
@@ -49,16 +48,6 @@ response.setDateHeader("Expires", 0);
 			%>
 		</div>
 	</article>
-	<ul class="nav navbegin">
-		<li><a
-			href="<%=request.getContextPath()%>/Dashboard?action=loadcreate">Add
-				Account</a></li>
-		<li><a
-			href="<%=request.getContextPath()%>/Transactions?action=transactions">Transfer</a></li>
-		<li><a href="<%=request.getContextPath()%>/Payees?action=payees">Withdraw</a></li>
-		<li><a
-			href="<%=request.getContextPath()%>/Dashboard?action=profile">Deposit</a></li>
-	</ul>
 	<footer class="footer">©2021 MultiCurrency Accounts Ltd.
 		multiCurrencyXchange</footer>
 </div>

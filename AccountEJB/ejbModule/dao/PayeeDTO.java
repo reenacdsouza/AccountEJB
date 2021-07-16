@@ -24,19 +24,19 @@ public class PayeeDTO implements PayeeDTORemote {
 	@PersistenceContext(unitName = "AccountEJB")
 	EntityManager em;
 
-    /**
-     * Default constructor. 
-     */
-    public PayeeDTO() {
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * Default constructor.
+	 */
+	public PayeeDTO() {
+	}
 
 	@Override
 	public Set<Map<String, String>> custAllPayees(int custId) {
-		
+
 		Map<String, String> errorMap = new HashMap<>(); // HashMap to hold exception and error messages
 
-		Set<Map<String, String>> payeeSet = new HashSet<Map<String, String>>(); // A list of all Payees Hashmaps for customer
+		Set<Map<String, String>> payeeSet = new HashSet<Map<String, String>>(); // A list of all Payees Hashmaps for
+																				// customer
 		try {
 			System.out.println("In try block fetching user payees");
 			Query q = em.createQuery("SELECT c from Customer as c where c.id= :id");
@@ -50,7 +50,7 @@ public class PayeeDTO implements PayeeDTORemote {
 				cust = (Customer) custList.get(0); // customer object
 				Set<ExternalPayee> payees = cust.getExternalPayees();
 				ExternalPayee extPayee = new ExternalPayee(); // to hold the reference of each payee
-				for(ExternalPayee payee: payees) {
+				for (ExternalPayee payee : payees) {
 					extPayee = payee; // payee object
 					Map<String, String> custPayeeMap = new HashMap<>(); // HashMap to hold Payee details
 					custPayeeMap.put("name", extPayee.getPayeeName()); // payee name

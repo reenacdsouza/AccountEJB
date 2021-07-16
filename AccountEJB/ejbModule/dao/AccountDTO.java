@@ -16,7 +16,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
 import model.Account;
 import model.AccountTransaction;
 import model.AccountType;
@@ -32,8 +31,6 @@ import model.TransactionType;
 public class AccountDTO implements AccountDTORemote {
 	@PersistenceContext(unitName = "AccountEJB")
 	EntityManager em;
-	private int random = 1000;
-	private BigInteger ranNum = BigInteger.valueOf((long) (0.00));
 
 	/**
 	 * Default constructor.
@@ -71,9 +68,9 @@ public class AccountDTO implements AccountDTORemote {
 					accSet.add(custAccMap); // add the single account map to the list
 				}
 			}
-		} catch (Exception E) {
-			errorMap.put("error", "An error occured while fetching customer account details. Please try again. Error: "
-					+ E.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			errorMap.put("error", "An error occured while fetching customer account details. Please try again.");
 			accSet.add(errorMap);
 		}
 		return accSet;// return the list of Account HashMaps
@@ -81,16 +78,25 @@ public class AccountDTO implements AccountDTORemote {
 
 	@Override
 	public boolean createAccount(int custId, String type, BigDecimal deposit) {
-		System.out.println("Random account number at the beginning of createAccount: " + ranNum);
 		try {
+			System.out.println("In try block of createAccount");
+			BigInteger ranNum = null;
+			Account last = null;
+			Query q = em.createQuery("SELECT count(a) from Account as a");
+			if (q.getResultList().size() == 1) {
+				long recCount = (long) q.getResultList().get(0);
+				if (recCount > 0) {
+					Query qe = em.createQuery("Select a from Account as a order by a.id DESC");
+					qe.setMaxResults(1);
+					last = (Account) qe.getSingleResult();
+					ranNum = last.getAccountNumber().add(new BigInteger("1"));
+					System.out.println("Random Number incremented by a value of 1 :" + ranNum);
+				} else {
+					ranNum = new BigInteger("900000000000");
+				}
+			}
 
 			Account acc = new Account();
-
-			random++;
-//			System.out.println("Random constant number value: " + random);
-//			System.out.println("Random account number before math random in createaccount method: " + ranNum);
-			ranNum = BigInteger.valueOf((long) (Math.random() * Math.pow(10, 12) + random));
-//			System.out.println("Random account number: " + ranNum);
 			acc.setAccountNumber(ranNum);
 
 			BigInteger sortcode = BigInteger.valueOf(0);
@@ -112,7 +118,6 @@ public class AccountDTO implements AccountDTORemote {
 				break;
 			}
 			acc.setAccountType(em.find(AccountType.class, id));
-//			System.out.println("Account type: " + acc.getAccountType().getType());
 
 			Calendar calendar = Calendar.getInstance();
 			Date now = calendar.getTime();
@@ -120,24 +125,22 @@ public class AccountDTO implements AccountDTORemote {
 			acc.setCreateDate(currentTimestamp);
 
 			acc.setCurrentBalance(deposit);
+
 			em.persist(acc);
-//			System.out.println("Account object that was persisted: " + acc);
 
 			Customer cust = em.find(Customer.class, custId);
-//			System.out.println("Customer object: " + cust);
 			cust.addAccount(acc);
 
 			AccountTransaction accountTran = new AccountTransaction();
 			accountTran.setAccount(acc);
-			accountTran.setTransactionType(em.find(TransactionType.class, 11));
-			accountTran.setTransactionDescription("Account opening Deposit");
+			accountTran.setTransactionType(em.find(TransactionType.class, 1));
+			accountTran.setTransactionDescription("Account opening cash Deposit");
 			accountTran.setTransactionTime(currentTimestamp);
 			accountTran.setDebit(new BigDecimal("0.00"));
 			accountTran.setCredit(deposit);
 			accountTran.setRunningBalance(acc.getCurrentBalance());
-			em.persist(accountTran);
 
-//			System.out.println("Random number at the end of createaccount: " + ranNum);
+			em.persist(accountTran);
 
 			return true;
 
@@ -146,5 +149,89 @@ public class AccountDTO implements AccountDTORemote {
 		}
 
 		return false;
+	}
+
+	@Override
+	public Map<String, String> withdraw(BigInteger accountnumber, BigDecimal amount) {
+		Map<String, String> transactionMap = new HashMap<>(); // HashMap to hold return value
+		try {
+			System.out.println("In try block of withdraw");
+			Account account = null;
+			Query q = em.createQuery("SELECT a from Account as a where a.accountNumber= :accountnumber");
+			q.setParameter("accountnumber", accountnumber);
+			account = (Account) q.getSingleResult();
+			if (account != null) {
+				BigDecimal currentbalance = account.getCurrentBalance();
+				BigDecimal newbalance = currentbalance.subtract(amount);
+				
+				account.setCurrentBalance(newbalance);
+				em.merge(account);
+				
+				Calendar calendar = Calendar.getInstance();
+				Date now = calendar.getTime();
+				Timestamp currentTimestamp = new Timestamp(now.getTime());
+				
+				AccountTransaction accountTran = new AccountTransaction();
+				accountTran.setAccount(account);
+				accountTran.setTransactionType(em.find(TransactionType.class, 2));
+				accountTran.setTransactionDescription("Cash Withdrawal");
+				accountTran.setTransactionTime(currentTimestamp);
+				accountTran.setDebit(new BigDecimal("0.00"));
+				accountTran.setCredit(amount);
+				accountTran.setRunningBalance(account.getCurrentBalance());
+				
+				em.persist(accountTran);
+				transactionMap.put("newbalance", newbalance.toString());
+			} else {
+				transactionMap.put("failure", "Error performing withdrawal transaction. Please try again later");
+			}
+		} catch (Exception e) {
+			transactionMap.put("error",
+					"An error occured while performing withdrawal transaction. Please try again.");
+			e.printStackTrace();
+		}
+		return transactionMap;
+	}
+
+	@Override
+	public Map<String, String> deposit(BigInteger accountnumber, BigDecimal amount) {
+		Map<String, String> transactionMap = new HashMap<>(); // HashMap to hold return value
+		try {
+			System.out.println("In try block of deposit");
+			Account account = null;
+			Query q = em.createQuery("SELECT a from Account as a where a.accountNumber= :accountnumber");
+			q.setParameter("accountnumber", accountnumber);
+			account = (Account) q.getSingleResult();
+			if (account != null) {
+				BigDecimal currentbalance = account.getCurrentBalance();
+				BigDecimal newbalance = currentbalance.add(amount);
+				account.setCurrentBalance(newbalance);
+				em.merge(account);
+				
+				Calendar calendar = Calendar.getInstance();
+				Date now = calendar.getTime();
+				Timestamp currentTimestamp = new Timestamp(now.getTime());
+				
+				AccountTransaction accountTran = new AccountTransaction();
+				accountTran.setAccount(account);
+				accountTran.setTransactionType(em.find(TransactionType.class, 1));
+				accountTran.setTransactionDescription("Cash Deposit");
+				accountTran.setTransactionTime(currentTimestamp);
+				accountTran.setDebit(new BigDecimal("0.00"));
+				accountTran.setCredit(amount);
+				accountTran.setRunningBalance(account.getCurrentBalance());
+				
+				em.persist(accountTran);
+				
+				transactionMap.put("newbalance", newbalance.toString());
+			} else {
+				transactionMap.put("failure", "Error performing deposit transaction. Please try again later");
+			}
+		} catch (Exception e) {
+			transactionMap.put("error",
+					"An error occured while performing deposit transaction. Please try again.");
+			e.printStackTrace();
+		}
+		return transactionMap;
 	}
 }

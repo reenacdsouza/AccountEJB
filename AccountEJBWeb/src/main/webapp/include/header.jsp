@@ -12,7 +12,7 @@
 	<div>
 		<h1 class="title">MultiCurrency Accounts</h1>
 	</div>
-	<ul class="nav navend">
+	<ul class="nav">
 		<li><a
 			href="<%=request.getContextPath()%>/Dashboard?action=dashboard">Dashboard</a></li>
 		<li><a
