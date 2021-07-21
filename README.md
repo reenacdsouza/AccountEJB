@@ -20,7 +20,7 @@ Software used:
 
 8.Other: HTML, CSS, Flexbox, Grid
 
-Folow below stpes in order to use the application:
+Folow below steps in order to use the application:
 1. In Eclipse version used is 2021-06 (4.20.0), create EJB project, Remote client and dynamic web project. Add all of these while creating to EAR. You will have 4 folders when done.
 2. Copy the files in the respective folders in the prototype zip provided into the folders in eclipse created in step 1.
 3. Install MySQL server and workbench and execute Dump20210716.sql in mysql workbench in order to create database, table and load account and transaction data. Use ha07 as admin user with same privileges as root user and save password as ha07.
